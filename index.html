@@ -23,8 +23,8 @@
                 screen_container: document.getElementById("screen_container"),
                 bios: { url: "https://copy.sh" },
                 vga_bios: { url: "https://copy.sh" },
-                // Use a generic mini-kernel to boot your custom filesystem archive
-                bzimage: { url: "https://copy.sh" }, 
+                // Use the local kernel copy we just downloaded to prevent errors
+                bzimage: { url: "linux-3.18.bin" }, 
                 initrd: { url: "spearos-rootfs.tar" },
                 autostart: true,
                 cmdline: "rw root=/dev/ram0",
