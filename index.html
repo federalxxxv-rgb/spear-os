@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Spear OS Online</title>
+    <!-- Load the WebAssembly emulator environment -->
+    <script src="https://copy.sh"></script>
+</head>
+<body style="background: #111; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px;">
+    
+    <h1>Welcome to Spear OS</h1>
+    <p>Running entirely inside your browser sandbox via WebAssembly</p>
+    
+    <!-- Emulator display block -->
+    <div id="screen_container" style="white-space: pre; font-family: monospace; font-weight: bold; background: #000; color: #fff; display: inline-block; padding: 10px; border-radius: 4px; min-width: 640px; min-height: 400px; text-align: left;"></div>
+
+    <script>
+        window.onload = function() {
+            var emulator = new V86Starter({
+                wasm_path: "https://copy.sh",
+                memory_size: 32 * 1024 * 1024, // 32MB RAM
+                vga_memory_size: 2 * 1024 * 1024,
+                screen_container: document.getElementById("screen_container"),
+                bios: { url: "https://copy.sh" },
+                vga_bios: { url: "https://copy.sh" },
+                // Use a generic mini-kernel to boot your custom filesystem archive
+                bzimage: { url: "https://copy.sh" }, 
+                initrd: { url: "spearos-rootfs.tar" },
+                autostart: true,
+                cmdline: "rw root=/dev/ram0",
+            });
+        }
+    </script>
+</body>
+</html>
+

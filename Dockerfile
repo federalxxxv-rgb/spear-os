@@ -17,4 +17,3 @@ RUN echo "spearos" > /etc/hostname
 
 # Start the command line shell when booted
 CMD ["/bin/sh"]
-
