@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Spear OS Online</title>
-    <!-- Load the WebAssembly emulator environment -->
-    <script src="https://copy.sh"></script>
+    <!-- Use a highly-optimized fast delivery network for the emulator engine script -->
+    <script src="https://jsdelivr.net"></script>
 </head>
 <body style="background: #111; color: #fff; font-family: sans-serif; text-align: center; margin: 0; padding: 20px;">
     
@@ -17,13 +17,14 @@
     <script>
         window.onload = function() {
             var emulator = new V86Starter({
-                wasm_path: "https://copy.sh",
+                // Pull the core assembly engine from a highly available source
+                wasm_path: "https://jsdelivr.net",
                 memory_size: 32 * 1024 * 1024, // 32MB RAM
                 vga_memory_size: 2 * 1024 * 1024,
                 screen_container: document.getElementById("screen_container"),
-                bios: { url: "https://copy.sh" },
-                vga_bios: { url: "https://copy.sh" },
-                // Use the local kernel copy we just downloaded to prevent errors
+                // Keep your custom local rebranded OS system assets running natively
+                bios: { url: "seabios.bin" },
+                vga_bios: { url: "vgabios.bin" },
                 bzimage: { url: "linux-3.18.bin" }, 
                 initrd: { url: "spearos-rootfs.tar" },
                 autostart: true,
@@ -33,4 +34,3 @@
     </script>
 </body>
 </html>
-
