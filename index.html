@@ -2,70 +2,39 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Spear OS Desktop</title>
+    <title>Spear OS Core Linux</title>
+    <!-- Load the native WebAssembly JIT engine script library -->
     <script src="https://jsdelivr.net"></script>
     <style>
-        * { box-sizing: border-box; user-select: none; }
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; font-family: sans-serif; background: #1c2721; }
-        .desktop-canvas { width: 100%; height: calc(100% - 40px); background: radial-gradient(circle, #2d3f34 0%, #111814 100%); position: relative; padding: 20px; }
-        .os-window { position: absolute; width: 680px; height: 440px; background: #1e1e1e; border: 1px solid #3c3c3c; border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,0.6); display: flex; flex-direction: column; overflow: hidden; top: 10%; left: 15%; }
-        .window-header { background: #2d2d2d; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 14px; border-bottom: 1px solid #3c3c3c; cursor: move; color: #fff; font-size: 13px; font-weight: bold; }
-        .window-content { flex: 1; background: #000; position: relative; }
-        #screen_container { width: 100%; height: 100%; padding: 8px; }
-        .taskbar-panel { width: 100%; height: 40px; background: #232730; position: absolute; bottom: 0; left: 0; display: flex; align-items: center; justify-content: space-between; padding: 0 10px; border-top: 1px solid #1a1d24; }
-        .start-button { background: #87cf8e; border: none; color: #fff; font-weight: bold; padding: 0 14px; height: 30px; border-radius: 4px; cursor: pointer; }
-        .live-clock { color: #b9bec6; font-size: 13px; font-weight: bold; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0f12; font-family: monospace; }
+        .console-frame { width: 100%; height: 100%; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        #screen_container { width: 100%; height: 100%; color: #fff; background: #000; border-radius: 4px; border: 1px solid #1f242c; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
     </style>
 </head>
 <body>
-    <div class="desktop-canvas">
-        <div class="os-window">
-            <div class="window-header" onmousedown="dragWindow(this)">
-                <div>💻 root@spearos: ~</div>
-            </div>
-            <div class="window-content">
-                <div id="screen_container"></div>
-            </div>
-        </div>
+
+    <div class="console-frame">
+        <!-- Interactive display monitor grid element -->
+        <div id="screen_container"></div>
     </div>
-    <div class="taskbar-panel">
-        <button class="start-button">🌿 Menu</button>
-        <div class="live-clock" id="liveClock">12:00 PM</div>
-    </div>
+
     <script>
-        function updateClock() {
-            const now = new Date();
-            let hours = now.getHours();
-            const minutes = String(now.getMinutes()).padStart(2, '0');
-            const ampm = hours >= 12 ? 'PM' : 'AM';
-            hours = hours % 12 || 12;
-            document.getElementById('liveClock').textContent = hours + ':' + minutes + ' ' + ampm;
-        }
-        setInterval(updateClock, 1000); updateClock();
-
-        function dragWindow(header) {
-            const win = header.parentElement;
-            function move(e) {
-                win.style.left = (win.offsetLeft + e.movementX) + 'px';
-                win.style.top = (win.offsetTop + e.movementY) + 'px';
-            }
-            function stop() { window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', stop); }
-            window.addEventListener('mousemove', move); window.addEventListener('mouseup', stop);
-        }
-
         window.onload = function() {
             var emulator = new V86Starter({
                 wasm_path: "https://jsdelivr.net",
-                memory_size: 32 * 1024 * 1024,
+                memory_size: 32 * 1024 * 1024, // Allocate clean 32MB workspace RAM
                 vga_memory_size: 2 * 1024 * 1024,
                 screen_container: document.getElementById("screen_container"),
                 bios: { url: "seabios.bin" },
                 vga_bios: { url: "vgabios.bin" },
+                // Mount your real custom compiled Linux kernel and system archive
                 bzimage: { url: "linux-3.18.bin" }, 
                 initrd: { url: "spearos-rootfs.tar" },
                 autostart: true,
                 cmdline: "rw root=/dev/ram0 console=ttyS0",
             });
+            
+            // Automatically capture keyboard focus when clicking onto the canvas layout
             document.getElementById("screen_container").addEventListener("click", function() {
                 emulator.keyboard_set_status(true);
             });
@@ -73,3 +42,4 @@
     </script>
 </body>
 </html>
+
