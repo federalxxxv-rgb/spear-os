@@ -2,18 +2,19 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Spear OS Linux Core</title>
-    <!-- Use a direct production CDN to run the WebAssembly layers smoothly -->
+    <title>Spear OS Core Linux</title>
+    <!-- Use the production production WebAssembly engine script library -->
     <script src="https://jsdelivr.net"></script>
     <style>
-        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0b0e14; }
-        .monitor-box { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 15px; }
-        #screen_container { width: 100%; height: 100%; background: #000; color: #fff; font-family: monospace; font-weight: bold; font-size: 14px; overflow: hidden; }
+        body, html { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #0c0f12; font-family: monospace; }
+        .console-frame { width: 100%; height: 100%; padding: 20px; display: flex; justify-content: center; align-items: center; }
+        #screen_container { width: 100%; height: 100%; background: #000; border-radius: 4px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        #screen_container textarea { background: #000 !important; color: #fff !important; font-family: monospace !important; font-size: 14px !important; border: none !important; padding: 10px !important; outline: none !important; width: 100% !important; height: 100% !important; }
     </style>
 </head>
 <body>
 
-    <div class="monitor-box">
+    <div class="console-frame">
         <div id="screen_container"></div>
     </div>
 
@@ -23,16 +24,17 @@
                 wasm_path: "https://jsdelivr.net",
                 memory_size: 32 * 1024 * 1024,
                 vga_memory_size: 2 * 1024 * 1024,
+                // Automatically links up with the HTML screen container element
                 screen_container: document.getElementById("screen_container"),
-                // Pointing directly to your local file layers
                 bios: { url: "seabios.bin" },
                 vga_bios: { url: "vgabios.bin" },
                 bzimage: { url: "linux-3.18.bin" }, 
                 initrd: { url: "spearos-rootfs.tar" },
                 autostart: true,
-                cmdline: "rw root=/dev/ram0 console=ttyS0 quiet",
+                // Toggles the bootloader parameters from hidden to verbose text mode
+                cmdline: "rw root=/dev/ram0 initial_page=0",
             });
-
+            
             document.getElementById("screen_container").addEventListener("click", function() {
                 emulator.keyboard_set_status(true);
             });
